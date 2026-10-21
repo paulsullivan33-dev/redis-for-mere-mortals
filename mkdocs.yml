@@ -1,0 +1,26 @@
+site_name: Redis for Mere Mortals
+site_description: Plain-language Redis. An in-memory store run as a small service on a throwaway lab port — keys, expiry, hashes, queues, leaderboards, persistence restarted and read back three ways, memory limits with a climbing eviction counter, and the honest chapter on why it is not your database.
+site_url: https://paulsullivan33-dev.github.io/redis-for-mere-mortals/
+
+# Guides live at the repo root (nice for GitHub browsing).
+# The deploy workflow copies them into docs/ before building.
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - What Redis Is: what-redis-is.md
+  - Keys and Strings: keys-and-strings.md
+  - Expiry: expiry.md
+  - Hashes: hashes.md
+  - "Lists and Queues": lists-and-queues.md
+  - Sets and Sorted Sets: sets-and-sorted-sets.md
+  - "KEYS or SCAN": keys-or-scan.md
+  - Persistence: persistence.md
+  - Memory and Eviction: memory-and-eviction.md
+  - Pub/Sub and Transactions: pubsub-and-transactions.md
+  - Security Basics: security.md
+  - "Not Your Database": not-your-database.md
+  - Troubleshooting: troubleshooting.md
+  - Glossary: glossary.md
+  - Writing Criteria: criteria.md

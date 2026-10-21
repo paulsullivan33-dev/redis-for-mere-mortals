@@ -1,0 +1,121 @@
+Redis commands — the everyday set from
+"Redis for Mere Mortals"
+====================================================================
+
+Every output quoted in the guide was captured
+from Redis 7.0.15 on the build machine, run
+against the lab instance in redis-lab.conf:
+port 6399, loopback only, its own directory.
+The -p 6399 below is what keeps every command
+talking to the lab and not to port 6379.
+
+
+MEETING THE SERVER
+------------------
+    redis-server redis-lab.conf     start the lab instance
+    redis-cli -p 6399 PING          PONG means alive
+    redis-cli -p 6399 INFO server   the server's self-report
+    redis-cli -p 6399 INFO keyspace keys per database
+    redis-cli -p 6399 CONFIG GET port
+                                read a setting in force
+    redis-cli -p 6399 DBSIZE        keys in this database
+
+
+KEYS AND STRINGS
+----------------
+    SET key value                   store (replaces silently)
+    GET key                         fetch (blank = not there)
+    INCR key / INCRBY key n         atomic counters
+    DECR key                        minus one
+    STRLEN key                      length without fetching
+    TYPE key                        string, hash, list, ...
+    EXISTS key                      1 or 0
+    DEL key                         answers how many it removed
+
+
+EXPIRY
+------
+    SET key value EX 5              value plus 5-second deadline
+    TTL key                         seconds left;
+                                    -1 = no expiry, -2 = no key
+    PTTL key                        same, in milliseconds
+    EXPIRE key 120                  deadline on an existing key
+    PERSIST key                     take the deadline off
+
+
+HASHES (ONE KEY, ONE RECORD)
+----------------------------
+    HSET member:1001 name "Ada Osei" joined 2024-03-14 loans 2
+    HGETALL member:1001             every field and value
+    HGET member:1001 name           one field
+    HINCRBY member:1001 loans 1     a counter inside the record
+    HLEN / HEXISTS / HDEL           count, ask, remove a field
+
+
+LISTS (THE QUEUE)
+-----------------
+    LPUSH door-queue "Ada Osei"     in at the head
+    RPOP door-queue                 out at the tail (FIFO)
+    LRANGE door-queue 0 -1          read head-first, whole list
+    LLEN door-queue                 how many are waiting
+    BRPOP door-queue 1              the pop that waits (seconds;
+                                    0 waits forever)
+
+
+SETS AND SORTED SETS
+--------------------
+    SADD club "name" ...            add members (dupes answer 0)
+    SISMEMBER club "name"           1 or 0
+    SCARD club                      member count
+    SINTER a b / SUNION a b / SDIFF a b
+    ZADD board 12.5 "Ada"           score a member
+    ZRANGE board 0 -1 WITHSCORES    lowest first
+    ZREVRANGE board 0 2 WITHSCORES  the top three
+    ZREVRANK board "Ada"            place, counting from 0
+    ZINCRBY board 2 "Priya"         move a score
+
+
+FINDING KEYS
+------------
+    KEYS 'bulk:*'                   everything at once (lab only)
+    SCAN 0 MATCH 'bulk:*' COUNT 5   one batch + next cursor
+    redis-cli -p 6399 --scan --pattern 'bulk:*'
+                                    the whole walk, batched
+
+
+PERSISTENCE
+-----------
+    BGSAVE                          snapshot now, in background
+    CONFIG GET save                 the automatic save points
+    CONFIG GET appendonly           journal on or off
+    INFO persistence                last save's time and health
+    SHUTDOWN NOSAVE                 stop, saving nothing on exit
+
+
+MEMORY
+------
+    CONFIG GET maxmemory            the ceiling (0 = none)
+    CONFIG SET maxmemory-policy allkeys-lru
+                                    runtime only — see REWRITE
+    CONFIG REWRITE                  write running values to the
+                                    config file so they survive
+    INFO memory                     used_memory_human and friends
+    INFO stats                      evicted_keys lives here
+
+
+PUB/SUB AND TRANSACTIONS
+------------------------
+    SUBSCRIBE seedlib-news          listen (blocks, waiting)
+    PUBLISH seedlib-news "text"     answers how many received it
+    PUBSUB NUMSUB seedlib-news      subscriber count
+    MULTI ... EXEC                  queue commands, run together
+    WATCH key                       abort the EXEC if key changes
+
+
+SECURITY
+--------
+    CONFIG GET bind                 loopback only, for the lab
+    CONFIG GET protected-mode       the no-password backstop
+    CONFIG GET requirepass          blank means none set
+    CONFIG SET requirepass pw       runtime; file or REWRITE lasts
+    redis-cli -p 6399 -a pw PING    present the password
