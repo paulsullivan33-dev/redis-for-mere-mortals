@@ -1,6 +1,7 @@
 site_name: Redis for Mere Mortals
 site_description: Plain-language Redis. An in-memory store run as a small service on a throwaway lab port — keys, expiry, hashes, queues, leaderboards, persistence restarted and read back three ways, memory limits with a climbing eviction counter, and the honest chapter on why it is not your database.
 site_url: https://paulsullivan33-dev.github.io/redis-for-mere-mortals/
+copyright: 'Part of <a href="https://paulsullivan33-dev.github.io/mere-mortals/">For Mere Mortals</a> · Text <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT'
 
 # Guides live at the repo root (nice for GitHub browsing).
 # The deploy workflow copies them into docs/ before building.
